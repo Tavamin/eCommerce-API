@@ -34,7 +34,7 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='products')
-    discounts = models.ManyToManyField(Discount)
+    discounts = models.OneToOneField(Discount, on_delete=models.CASCADE, related_name='product', null=True, blank=True)
 
     def __str__(self):
         return self.title
