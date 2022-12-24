@@ -1,5 +1,6 @@
 from django.db import models
 from product.models import Product, Discount
+from accounts.models import CustomUser
 
 
 # Create your models here.
@@ -12,7 +13,7 @@ class Order(models.Model):
                             ('delivered', 'Delivered')]
 
     status = models.CharField(max_length=50, choices=ORDER_STATUS_CHOICES, default='pending')
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='orders')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE, related_name='orders', null=True, blank=True)
 
     def __str__(self):
@@ -35,7 +36,7 @@ class OrderItem(models.Model):
 class Cart(models.Model):
     price = models.FloatField()
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE, related_name='carts', null=True, blank=True)
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='carts')
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='carts')
 
 
 class CartItem(models.Model):

@@ -1,5 +1,7 @@
 from django.db import models
 
+from accounts.models import CustomUser
+
 
 # Create your models here.
 class Category(models.Model):
@@ -20,7 +22,7 @@ class Discount(models.Model):
     value = models.FloatField()
     voucher = models.CharField(max_length=90, unique=True, null=True, blank=True)
     expiry_date = models.DateTimeField()
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='discounts', null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='discounts', null=True, blank=True)
 
     def __str__(self):
         return f"{self.kind} - {self.value}"
@@ -30,6 +32,7 @@ class Product(models.Model):
     title = models.CharField(max_length=80)
     slug = models.SlugField()
     description = models.TextField()
+    image = models.ImageField(null=True, blank=True)
     price = models.FloatField(max_length=18)
     inventory = models.IntegerField()
     last_update = models.DateTimeField(auto_now=True)
@@ -43,17 +46,25 @@ class Product(models.Model):
         ordering = ['title']
 
 
+class HaveDiscount(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='have_discounts')
+    discount = models.ForeignKey(Discount, on_delete=models.CASCADE, related_name='have_discounts')
+
+    def __str__(self):
+        return f"{self.user} - {self.discount}"
+
+    class Meta:
+        unique_together = ('user', 'discount')
+
+
 class Comment(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey('auth.User', on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
 
     def __str__(self):
         return f" {self.product} - {self.user}"
 
     class Meta:
         ordering = ['content']
-
-
-
