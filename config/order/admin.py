@@ -23,3 +23,20 @@ class OrderAdmin(admin.ModelAdmin):
     list_display = ['id', 'created_at', 'user', 'status']
     list_editable = ['status']
     list_per_page = 10
+
+
+
+
+class CartItemInline(admin.TabularInline):
+    autocomplete_fields = ['product']
+    min_num = 1
+    # max_num = 20
+    model = CartItem
+    extra = 0
+
+
+@admin.register(Cart)
+class CartAdmin(admin.ModelAdmin):
+    inlines = [CartItemInline]
+    list_display = ['id', 'discount', 'user']
+    list_per_page = 10

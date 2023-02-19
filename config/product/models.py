@@ -1,6 +1,6 @@
 from django.db import models
 
-from accounts.models import CustomUser
+from accounts.models import Customer
 
 
 # Create your models here.
@@ -22,7 +22,7 @@ class Discount(models.Model):
     value = models.FloatField()
     voucher = models.CharField(max_length=90, unique=True, null=True, blank=True)
     expiry_date = models.DateTimeField()
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='discounts', null=True, blank=True)
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='discounts', null=True, blank=True)
 
     def __str__(self):
         return f"{self.kind} - {self.value}"
@@ -47,7 +47,7 @@ class Product(models.Model):
 
 
 class HaveDiscount(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='have_discounts')
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='have_discounts')
     discount = models.ForeignKey(Discount, on_delete=models.CASCADE, related_name='have_discounts')
 
     def __str__(self):
@@ -58,10 +58,17 @@ class HaveDiscount(models.Model):
 
 
 class Comment(models.Model):
+
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     product = models.ForeignKey(Product, on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
+    user = models.ForeignKey(Customer, on_delete=models.CASCADE, related_name='comments', null=True, blank=True)
+    # if user is not logged in then we will use email
+    email = models.EmailField(null=True, blank=True)
+    name = models.CharField(max_length=50, null=True, blank=True)
+
+
+
 
     def __str__(self):
         return f" {self.product} - {self.user}"
