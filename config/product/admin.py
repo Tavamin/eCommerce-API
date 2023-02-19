@@ -3,7 +3,7 @@ from django.db.models import Count, QuerySet
 from django.utils.html import format_html, urlencode
 from django.urls import reverse
 
-from .models import Product, Category
+from .models import Product, Category, HaveDiscount, Discount
 
 
 # Register your models here.
@@ -77,3 +77,15 @@ class CategoryAdmin(admin.ModelAdmin):
         return super().get_queryset(request).annotate(
             products_count=Count('products')
         )
+
+
+
+@admin.register(HaveDiscount)
+class HaveDiscountAdmin(admin.ModelAdmin):
+    list_per_page = 10
+
+
+@admin.register(Discount)
+class DiscountAdmin(admin.ModelAdmin):
+    list_per_page = 10
+
