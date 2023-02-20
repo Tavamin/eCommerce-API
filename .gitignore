@@ -10,3 +10,5 @@ config/.idea/
 .DS_Store
 .idea
 *.iml
+*.xml
+__pycache__
